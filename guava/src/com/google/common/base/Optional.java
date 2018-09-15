@@ -86,6 +86,7 @@ public abstract class Optional<T> implements Serializable {
    *
    * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
    * {@code Optional.empty}.
+   * 创建引用缺失的Optional实例
    */
   public static <T> Optional<T> absent() {
     return Absent.withType();
@@ -98,6 +99,8 @@ public abstract class Optional<T> implements Serializable {
    * <p><b>Comparison to {@code java.util.Optional}:</b> no differences.
    *
    * @throws NullPointerException if {@code reference} is null
+   *
+   * 创建指定引用的Optional实例，若引用为null则快速失败
    */
   public static <T> Optional<T> of(T reference) {
     return new Present<T>(checkNotNull(reference));
@@ -109,6 +112,8 @@ public abstract class Optional<T> implements Serializable {
    *
    * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
    * {@code Optional.ofNullable}.
+   *
+   * 创建指定引用的Optional实例，若引用为null则创建表示缺失的absent
    */
   public static <T> Optional<T> fromNullable(@Nullable T nullableReference) {
     return (nullableReference == null) ? Optional.<T>absent() : new Present<T>(nullableReference);
@@ -162,12 +167,15 @@ public abstract class Optional<T> implements Serializable {
    * Returns {@code true} if this holder contains a (non-null) instance.
    *
    * <p><b>Comparison to {@code java.util.Optional}:</b> no differences.
+   *
+   * 如果Optional包含非null的引用（引用存在），返回true
    */
   public abstract boolean isPresent();
 
   /**
    * Returns the contained instance, which must be present. If the instance might be absent, use
    * {@link #or(Object)} or {@link #orNull} instead.
+   *
    *
    * <p><b>Comparison to {@code java.util.Optional}:</b> when the value is absent, this method
    * throws {@link IllegalStateException}, whereas the Java 8 counterpart throws {@link
@@ -176,6 +184,8 @@ public abstract class Optional<T> implements Serializable {
    * @throws IllegalStateException if the instance is absent ({@link #isPresent} returns {@code
    *     false}); depending on this <i>specific</i> exception type (over the more general {@link
    *     RuntimeException}) is discouraged
+   *
+   *  返回Optional所包含的引用，若引用缺失，则抛出java.lang.IllegalStateException
    */
   public abstract T get();
 
@@ -214,6 +224,9 @@ public abstract class Optional<T> implements Serializable {
    * Optional.orElse}, but will not accept {@code null} as a {@code defaultValue} ({@link #orNull}
    * must be used instead). As a result, the value returned by this method is guaranteed non-null,
    * which is not the case for the {@code java.util} equivalent.
+   *
+   * 如果Optional为present类型，则返回Optional所包含的引用，若为Absent，返回指定的值defaultValue,如果defaultValue为null，
+   * 则抛出空指针异常
    */
   public abstract T or(T defaultValue);
 
@@ -223,6 +236,9 @@ public abstract class Optional<T> implements Serializable {
    * <p><b>Comparison to {@code java.util.Optional}:</b> this method has no equivalent in Java 8's
    * {@code Optional} class; write {@code thisOptional.isPresent() ? thisOptional : secondChoice}
    * instead.
+   *
+   * 如果Optional为present类型，则返回present，若为Absent，返回指定的值secondChoice,如果defaultValue为null，
+   *  则抛出空指针异常
    */
   public abstract Optional<T> or(Optional<? extends T> secondChoice);
 
@@ -235,6 +251,9 @@ public abstract class Optional<T> implements Serializable {
    *
    * @throws NullPointerException if this optional's value is absent and the supplier returns {@code
    *     null}
+   *
+   *     如果Optional为present类型，则返回present，若为Absent类型，返回指定的值defaultValue,如果defaultValue为null，
+   *     则抛出空指针异常
    */
   @Beta
   public abstract T or(Supplier<? extends T> supplier);
@@ -245,6 +264,8 @@ public abstract class Optional<T> implements Serializable {
    *
    * <p><b>Comparison to {@code java.util.Optional}:</b> this method is equivalent to Java 8's
    * {@code Optional.orElse(null)}.
+   *
+   * 返回Optional所包含的引用，若为Absent类型，返回null
    */
   public abstract @Nullable T orNull();
 
@@ -268,6 +289,8 @@ public abstract class Optional<T> implements Serializable {
    * }</pre>
    *
    * @since 11.0
+   *
+   * 返回Optional所包含引用的单例不可变集，如果引用存在，返回一个只有单一元素的集合，如果引用缺失，返回一个空集合。
    */
   public abstract Set<T> asSet();
 
